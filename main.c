@@ -6,7 +6,7 @@
 /*   By: jjauzion <jjauzion@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/29 11:48:29 by jjauzion          #+#    #+#             */
-/*   Updated: 2017/12/13 10:21:47 by jjauzion         ###   ########.fr       */
+/*   Updated: 2017/12/14 15:17:05 by jjauzion         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int		main(int argc, char **argv)
 	}
 	ret = 1;
 	line = NULL;
-	s = NULL;
+	s = &line;
 	while (ret == 1)
 	{
 		ft_putstr(">>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
