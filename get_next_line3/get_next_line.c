@@ -6,7 +6,7 @@
 /*   By: jjauzion <jjauzion@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/29 12:23:51 by jjauzion          #+#    #+#             */
-/*   Updated: 2017/12/11 18:35:15 by jjauzion         ###   ########.fr       */
+/*   Updated: 2018/02/01 14:55:23 by jjauzion         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static int		ft_flush(char *dst, t_file *f, int *len)
 	return (1);
 }
 
-static void		*ft_realloc(void **src, size_t len, size_t size)
+static void		*ft_realloc_line(void **src, size_t len, size_t size)
 {
 	void	*dst;
 
@@ -55,7 +55,7 @@ static int		ft_read(char **str, t_file *f, int *len)
 		}
 		if (ft_flush(*str, f, len))
 			return (EOL);
-		*str = (char *)ft_realloc((void **)str, *len, BUFF_SIZE + 1);
+		*str = (char *)ft_realloc_line((void **)str, *len, BUFF_SIZE + 1);
 	}
 }
 
@@ -90,22 +90,23 @@ int				get_next_line(const int fd, char **line)
 	int				status;
 	int				len;
 
-	if (!line)
-		return (-1);
 	len = 0;
 	f = ft_file_lst(fd, &file_lst);
 	str = ft_strnew(BUFF_SIZE + ft_strlen(f->buff) - f->index + 1);
-	if (!f || !str)
+	if (!f || !str || !line)
 		return (ERROR);
 	if (ft_flush(str, f, &len))
 	{
-		*line = (char *)ft_realloc((void**)&str, len, 0);
+		*line = (char *)ft_realloc_line((void**)&str, len, 0);
 		return (EOL);
 	}
-	if ((status = ft_read(&str, f, &len)) == ERROR)
-		return (ERROR);
-	if (*str == '\0' && status == EOFF)
+	if ((status = ft_read(&str, f, &len)) == ERROR || (!*str && status == EOFF))
+	{
+		ft_strdel(&str);
+		if (status == ERROR)
+			return (ERROR);
 		return (EOFF);
-	*line = (char *)ft_realloc((void**)&str, len, 0);
+	}
+	*line = (char *)ft_realloc_line((void**)&str, len, 0);
 	return (EOL);
 }
